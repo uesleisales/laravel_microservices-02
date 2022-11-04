@@ -42,6 +42,7 @@ class EvaluationController extends Controller
     public function store(StoreEvaluation $request, $company)
     {
         $response = $this->companyService->getCompany($company);
+
         $status = $response->status();
         if ($status != 200) {
             return response()->json([
@@ -51,7 +52,7 @@ class EvaluationController extends Controller
         $company = json_decode($response->body());
 
         $evaluation = $this->repository->create($request->validated());
-
+       return $evaluation;
         EvaluationCreated::dispatch($company->data->email)->onQueue('queue_email');
 
         return new EvaluationResource($evaluation);
